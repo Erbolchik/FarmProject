@@ -70,19 +70,31 @@ namespace Project
                         string category = comboBox1.SelectedItem.ToString();
                         string comentary = richTextBox1.Text;
                         string query = String.Format("Insert into Склад_Для_Запчастей (Серийный_номер,Название_запчасти,Дата_прибытия,Количество,Категория,Коментарии) Values ('{0}','{1}','{2}','{3}','{4}','{5}')", seriaNumber, name, date, count, category, comentary);
+                        DateTime today = DateTime.Now;
 
                         using (SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-O3QKGQU\SQLEXPRESS;Initial Catalog=Farm;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
                         {
-                            connection.Open();
-                            SqlCommand command = new SqlCommand(query, connection);
-                            command.ExecuteNonQuery();
-                            MessageBox.Show("Успешно доблавено");
+                            if (date > today)
+                            {
+                                MessageBox.Show("Ошибка даты,нельзя добавить будущую дату");
+                            }
+                            else if (today.Year - date.Year > 80)
+                            {
+                                MessageBox.Show("Ошибка даты,нельзя слишком старую дату");
+                            }
+                            else
+                            {
+                                connection.Open();
+                                SqlCommand command = new SqlCommand(query, connection);
+                                command.ExecuteNonQuery();
+                                MessageBox.Show("Успешно доблавено");
 
-                            textBox1.Text = "";
-                            textBox2.Text = "";
-                            textBox3.Text = "";
-                            richTextBox1.Text = "";
-                            comboBox1.Text = "";
+                                textBox1.Text = "";
+                                textBox2.Text = "";
+                                textBox3.Text = "";
+                                richTextBox1.Text = "";
+                                comboBox1.Text = "";
+                            }
                         }
                     }
                     catch (Exception ex)

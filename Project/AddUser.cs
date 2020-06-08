@@ -77,6 +77,7 @@ namespace Project
                 {
                     try
                     {
+                        
                         string name = textBox1.Text;
                         string lastname = textBox2.Text;
                         string middlename = textBox4.Text;
@@ -88,7 +89,7 @@ namespace Project
                         string jobWhere = comboBox1.SelectedItem.ToString();
                         string ogregat = comboBox2.SelectedItem.ToString();
                         int numberOgregat = Convert.ToInt32(textBox3.Text);
-
+                        DateTime today = DateTime.Now;
 
                         string quearyAdd = String.Format("Insert into Сотрудники (Фамилия,Имя,Отчество,Номер_Телефона,Дата_Рождения,Адрес_Проживания,Должность,Оклад,Место_Работы,Огрегаты,Серийный_номер_огрегата)" +
                             "Values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')", name, lastname, middlename, phone, birthday, address, position, salary, jobWhere, ogregat, numberOgregat);
@@ -97,21 +98,31 @@ namespace Project
                         using (SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-O3QKGQU\SQLEXPRESS;Initial Catalog=Farm;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
                         {
                             connection.Open();
-                            SqlCommand commandAddUsers = new SqlCommand(quearyAdd, connection);
-                            commandAddUsers.ExecuteNonQuery();
-                            MessageBox.Show("Данные успешны добавлены");
+                            if (birthday > today)
+                            {
+                                MessageBox.Show("Ошибка даты,нельзя добавить будущую дату");
+                            }
+                            else if(today.Year-birthday.Year > 80)
+                            {
+                                MessageBox.Show("Ошибка даты,нельзя слишком старую дату");
+                            }
+                            else
+                            {
+                                SqlCommand commandAddUsers = new SqlCommand(quearyAdd, connection);
+                                commandAddUsers.ExecuteNonQuery();
+                                MessageBox.Show("Данные успешны добавлены");
 
-                            textBox1.Text = "";
-                            textBox2.Text = "";
-                            textBox3.Text = "";
-                            textBox4.Text = "";
-                            textBox5.Text = "";
-                            textBox6.Text = "";
-                            textBox7.Text = "";
-                            textBox8.Text = "";
-                            comboBox1.Text = "";
-                            comboBox2.Text = "";
-
+                                textBox1.Text = "";
+                                textBox2.Text = "";
+                                textBox3.Text = "";
+                                textBox4.Text = "";
+                                textBox5.Text = "";
+                                textBox6.Text = "";
+                                textBox7.Text = "";
+                                textBox8.Text = "";
+                                comboBox1.Text = "";
+                                comboBox2.Text = "";
+                            }
                         }
                     }
 

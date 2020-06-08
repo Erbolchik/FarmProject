@@ -150,6 +150,7 @@ namespace Project
                         string jobWhere = comboBox1.SelectedItem.ToString();
                         string ogregat = comboBox2.SelectedItem.ToString();
                         int numberOgregat = Convert.ToInt32(textBox3.Text);
+                        DateTime today = DateTime.Now;
 
 
                         string queryUpdate = String.Format("update Сотрудники " +
@@ -166,44 +167,57 @@ namespace Project
                             ", Серийный_Номер_огрегата='{10}'" +
                             "where Фамилия = '{11}' ", name, lastname, middlename, phone, birthday, address, position, salary, jobWhere, ogregat, numberOgregat, comboBox3.SelectedItem.ToString());
 
-                        SqlCommand sqlCommandUpdate = new SqlCommand(queryUpdate, connection);
-                        sqlCommandUpdate.ExecuteNonQuery();
-                        MessageBox.Show("Данные успешно обновлены");
-                        comboBox3.Items.Clear();
-                        SqlCommand sqlCommand = new SqlCommand("Select Фамилия from Сотрудники", connection);
-                        using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                        if (birthday > today)
                         {
-                            while (reader.Read())
+                            MessageBox.Show("Ошибка даты,нельзя добавить будущую дату");
+                        }
+                        else if (today.Year - birthday.Year > 80)
+                        {
+                            MessageBox.Show("Ошибка даты,нельзя слишком старую дату");
+                        }
+                        else
+                        {
+                            SqlCommand sqlCommandUpdate = new SqlCommand(queryUpdate, connection);
+                            sqlCommandUpdate.ExecuteNonQuery();
+                            MessageBox.Show("Данные успешно обновлены");
+                            comboBox3.Items.Clear();
+                            SqlCommand sqlCommand = new SqlCommand("Select Фамилия from Сотрудники", connection);
+                            using (SqlDataReader reader = sqlCommand.ExecuteReader())
                             {
-                                comboBox3.Items.Add(reader[0].ToString());
+                                while (reader.Read())
+                                {
+                                    comboBox3.Items.Add(reader[0].ToString());
+                                }
                             }
+
+                            textBox1.Text = "";
+                            textBox2.Text = "";
+                            textBox3.Text = "";
+                            textBox4.Text = "";
+                            textBox5.Text = "";
+                            textBox6.Text = "";
+                            textBox7.Text = "";
+                            textBox8.Text = "";
+                            comboBox1.Text = "";
+                            comboBox2.Text = "";
+                            comboBox3.Text = "";
+
+                            textBox1.Enabled = false;
+                            textBox2.Enabled = false;
+                            textBox3.Enabled = false;
+                            textBox4.Enabled = false;
+                            textBox5.Enabled = false;
+                            textBox6.Enabled = false;
+                            textBox7.Enabled = false;
+                            textBox8.Enabled = false;
+                            comboBox1.Enabled = false;
+                            comboBox2.Enabled = false;
+                            button2.Enabled = false;
+                            button4.Enabled = false;
+                            dateTimePicker1.Enabled = false;
                         }
 
-                        textBox1.Text = "";
-                        textBox2.Text = "";
-                        textBox3.Text = "";
-                        textBox4.Text = "";
-                        textBox5.Text = "";
-                        textBox6.Text = "";
-                        textBox7.Text = "";
-                        textBox8.Text = "";
-                        comboBox1.Text = "";
-                        comboBox2.Text = "";
-                        comboBox3.Text = "";
-
-                        textBox1.Enabled = false;
-                        textBox2.Enabled = false;
-                        textBox3.Enabled = false;
-                        textBox4.Enabled = false;
-                        textBox5.Enabled = false;
-                        textBox6.Enabled = false;
-                        textBox7.Enabled = false;
-                        textBox8.Enabled = false;
-                        comboBox1.Enabled = false;
-                        comboBox2.Enabled = false;
-                        button2.Enabled = false;
-                        button4.Enabled = false;
-                        dateTimePicker1.Enabled = false;
+                        
                     }
                     catch (Exception ex)
                     {

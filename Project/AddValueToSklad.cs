@@ -49,47 +49,59 @@ namespace Project
                         int? countInSklad = 0;
                         string queryCapacity = "Select Вместимость from Виды_Складов where id_Склада=" + skladNumber;
                         string queryCountInSklad = "Select sum(Еденица_на_складе) from Склады where Номер_Склада=" + skladNumber;
+                        DateTime today = DateTime.Now;
 
 
                         using (SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-O3QKGQU\SQLEXPRESS;Initial Catalog=Farm;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
                         {
-                            connection.Open();
-                            SqlCommand commandCapacity = new SqlCommand(queryCapacity, connection);
-                            SqlCommand commandCountInSklad = new SqlCommand(queryCountInSklad, connection);
-                            maxCapacity = Convert.ToInt32(commandCapacity.ExecuteScalar().ToString());
-                            if (Convert.IsDBNull(commandCountInSklad.ExecuteScalar()) == true)
+                            if (date > today)
                             {
-                                countInSklad = 0;
+                                MessageBox.Show("Ошибка даты,нельзя добавить будущую дату");
+                            }
+                            else if (today.Year - date.Year > 80)
+                            {
+                                MessageBox.Show("Ошибка даты,нельзя слишком старую дату");
                             }
                             else
                             {
-                                countInSklad = Convert.ToInt32(commandCountInSklad.ExecuteScalar().ToString());
-                            }
-                            connection.Close();
-
-                            if (countInSklad + count > maxCapacity)
-                            {
-                                MessageBox.Show("Невозможно добавить,склад переполнен");
-                            }
-                            else
-                            {
-                                try
+                                connection.Open();
+                                SqlCommand commandCapacity = new SqlCommand(queryCapacity, connection);
+                                SqlCommand commandCountInSklad = new SqlCommand(queryCountInSklad, connection);
+                                maxCapacity = Convert.ToInt32(commandCapacity.ExecuteScalar().ToString());
+                                if (Convert.IsDBNull(commandCountInSklad.ExecuteScalar()) == true)
                                 {
-
-                                    connection.Open();
-                                    SqlCommand command = new SqlCommand(query, connection);
-                                    command.ExecuteNonQuery();
-                                    MessageBox.Show("Данные успешны добавлены");
-                                    textBox1.Text = "";
-                                    textBox3.Text = "";
-                                    comboBox1.Text = "";
-                                    comboBox2.Text = "";
-
+                                    countInSklad = 0;
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    MessageBox.Show("Произошла ошибка,повторите попытку!");
-                                    MessageBox.Show(ex.Message);
+                                    countInSklad = Convert.ToInt32(commandCountInSklad.ExecuteScalar().ToString());
+                                }
+                                connection.Close();
+
+                                if (countInSklad + count > maxCapacity)
+                                {
+                                    MessageBox.Show("Невозможно добавить,склад переполнен");
+                                }
+                                else
+                                {
+                                    try
+                                    {
+
+                                        connection.Open();
+                                        SqlCommand command = new SqlCommand(query, connection);
+                                        command.ExecuteNonQuery();
+                                        MessageBox.Show("Данные успешны добавлены");
+                                        textBox1.Text = "";
+                                        textBox3.Text = "";
+                                        comboBox1.Text = "";
+                                        comboBox2.Text = "";
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        MessageBox.Show("Произошла ошибка,повторите попытку!");
+                                        MessageBox.Show(ex.Message);
+                                    }
                                 }
                             }
                         }

@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Project
 {
@@ -26,7 +21,7 @@ namespace Project
         private void button3_Click(object sender, EventArgs e)
         {
             SqlDataAdapter sqlDataAdapter = new SqlDataAdapter("Select * from Склады ", connection);
-            DataTable dataTable = new DataTable();
+            System.Data.DataTable dataTable = new System.Data.DataTable();
             sqlDataAdapter.Fill(dataTable);
             dataGridView1.DataSource = dataTable;
         }
@@ -86,7 +81,7 @@ namespace Project
                         connection.Open();
 
                         SqlDataAdapter sqlDataAdapter = new SqlDataAdapter("Select * from Склады where Номер_Склада=" + comboBox1.SelectedItem.ToString(), connection);
-                        DataTable dataTable = new DataTable();
+                        System.Data.DataTable dataTable = new System.Data.DataTable();
                         sqlDataAdapter.Fill(dataTable);
                         dataGridView1.DataSource = dataTable;
 
@@ -155,6 +150,8 @@ namespace Project
                     else
                     {
                         SqlCommand sqlCommand = new SqlCommand("update Склады set Еденица_на_складе = +" + countToUpdate + " where id_культуры =" + dataGridView1.Rows[rowindex].Cells[columnindex].Value.ToString(), connection);
+                        SqlCommand sqlDelete = new SqlCommand("delete from Склады where Еденица_на_складе = 0", connection);
+                        sqlDelete.ExecuteNonQuery();
                         sqlCommand.ExecuteNonQuery();
                         MessageBox.Show("Данные успешно вычтины");
                     }
@@ -165,6 +162,83 @@ namespace Project
                 MessageBox.Show(ex.Message);
             }
 
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SaveTable(dataGridView1);
+                MessageBox.Show("Cохранено");
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        void SaveTable(DataGridView What_save)
+        {
+            try
+            {
+                string path = System.IO.Directory.GetCurrentDirectory() + @"\" + "Save_Excel.xlsx";
+
+                Microsoft.Office.Interop.Excel.Application excelapp = new Excel.Application();
+                Excel.Workbook workbook = excelapp.Workbooks.Add();
+                Excel.Worksheet worksheet = workbook.ActiveSheet;
+
+
+                for (int i = 1; i < dataGridView1.RowCount + 1; i++)
+                {
+                    for (int j = 1; j < dataGridView1.ColumnCount + 1; j++)
+                    {
+                        worksheet.Rows[1].Columns[j] = dataGridView1.Columns[j - 1].HeaderText;
+                        worksheet.Rows[i].Columns[j] = dataGridView1.Rows[i - 1].Cells[j - 1].Value;
+
+                    }
+                }
+
+                worksheet.Rows[9].Columns[7] = "Дата выгрузки ";
+                worksheet.Rows[10].Columns[7] = DateTime.Now;
+
+                excelapp.AlertBeforeOverwriting = false;
+                workbook.SaveAs(path);
+                excelapp.Quit();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-O3QKGQU\SQLEXPRESS;Initial Catalog=Farm;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(String.Format("Select * from Склады where Дата_События='{0}'", dateTimePicker1.Value.Date), connection);
+                    DataTable dataTable = new DataTable();
+                    sqlDataAdapter.Fill(dataTable);
+                    dataGridView1.DataSource = dataTable;
+                    if (dataGridView1.Rows.Count == 1)
+                    {
+                        MessageBox.Show("Нету данных в данной дате");
+                    }
+                    else
+                    {
+                        button4.Enabled = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
     }
 }

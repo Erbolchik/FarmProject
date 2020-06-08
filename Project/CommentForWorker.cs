@@ -84,7 +84,7 @@ namespace Project
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == "" || textBox2.Text == "" || textBox3.Text == "" || 
+            if (textBox1.Text == "" || textBox2.Text == "" || textBox3.Text == "" ||
                 comboBox1.Text == "" || comboBox2.Text == "" || richTextBox1.Text == "")
             {
                 MessageBox.Show("Сначала заполните все поля!!");
@@ -106,22 +106,36 @@ namespace Project
                         int numberOgregat = Convert.ToInt32(textBox3.Text);
                         DateTime dateEvent = dateTimePicker1.Value.Date;
                         string comment = richTextBox1.Text;
+                        DateTime today = DateTime.Now;
 
                         string quearyAdd = String.Format("Insert into Ежедневник(id_Работника,Фамилия,Имя,Агрегат,Серийный_номер_агрегата,Дата_События,Комментарии)" +
                             "Values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", idWorker, name, lastname, ogregat, numberOgregat, dateEvent, comment);
 
-                        SqlCommand sqlCommandInsert = new SqlCommand(quearyAdd, connection);
-                        sqlCommandInsert.ExecuteNonQuery();
-                        MessageBox.Show("Данные успешны записаны");
-                        textBox1.Text = "";
-                        textBox2.Text = "";
-                        textBox3.Text = "";
-                        richTextBox1.Text = "";
-                        comboBox2.Text = "";
-                        comboBox1.Text = "";
-                        button4.Enabled = false;
-                        dateTimePicker1.Enabled = false;
-                        richTextBox1.Enabled = false;
+
+                        if (dateEvent > today)
+                        {
+                            MessageBox.Show("Ошибка даты,нельзя добавить будущую дату");
+                        }
+                        else if (today.Year - dateEvent.Year > 80)
+                        {
+                            MessageBox.Show("Ошибка даты,нельзя слишком старую дату");
+                        }
+                        else
+                        {
+                            SqlCommand sqlCommandInsert = new SqlCommand(quearyAdd, connection);
+                            sqlCommandInsert.ExecuteNonQuery();
+                            MessageBox.Show("Данные успешны записаны");
+                            textBox1.Text = "";
+                            textBox2.Text = "";
+                            textBox3.Text = "";
+                            richTextBox1.Text = "";
+                            comboBox2.Text = "";
+                            comboBox1.Text = "";
+                            button4.Enabled = false;
+                            dateTimePicker1.Enabled = false;
+                            richTextBox1.Enabled = false;
+
+                        }
 
                     }
                     catch (Exception ex)

@@ -1,7 +1,6 @@
 C:\Users\Erbolchik\source\repos\Project\Project\bin\Debug\Project.exe.config
 C:\Users\Erbolchik\source\repos\Project\Project\bin\Debug\Project.exe
 C:\Users\Erbolchik\source\repos\Project\Project\bin\Debug\Project.pdb
-C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.csprojAssemblyReference.cache
 C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.Menu.resources
 C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.Properties.Resources.resources
 C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.Sklad.resources
@@ -17,3 +16,5 @@ C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.EditUser.resou
 C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.CommentForWorker.resources
 C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.DailyBook.resources
 C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.Calculation.resources
+C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.csproj.ResolveComReference.cache
+C:\Users\Erbolchik\source\repos\Project\Project\obj\Debug\Project.csprojAssemblyReference.cache

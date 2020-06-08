@@ -21,6 +21,9 @@ namespace Project
             button2.Enabled = false;
             richTextBox1.Enabled = false;
             textBox1.Enabled = false;
+
+
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -87,7 +90,7 @@ namespace Project
                     else
                     {
                         SqlCommand sqlCommand = new SqlCommand("update Склад_Для_Запчастей set Количество = +" + countToUpdate + " where Серийный_номер =" + dataGridView1.Rows[rowindex].Cells[columnindex].Value.ToString(), connection);
-                        SqlCommand sqlDelete = new SqlCommand("delete from Склад_Для_Запчастей where Количество = 0");
+                        SqlCommand sqlDelete = new SqlCommand("delete from Склад_Для_Запчастей where Количество = 0",connection);
                         sqlCommand.ExecuteNonQuery();
                         sqlDelete.ExecuteNonQuery();
                         MessageBox.Show("Данные успешно вычтины");
@@ -135,6 +138,43 @@ namespace Project
                 form.Closed += (s, args) => this.Close();
                 form.Show();
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            SqlDataAdapter sqlDataAdapter = new SqlDataAdapter("Select Серийный_номер,Название_запчасти,Дата_прибытия,Количество,Категория from Склад_Для_Запчастей where Категория = '"+comboBox1.SelectedItem+"'", connection);
+            DataTable dataTable = new DataTable();
+            sqlDataAdapter.Fill(dataTable);
+            dataGridView1.DataSource = dataTable;
+            button1.Enabled = true;
+            button2.Enabled = true;
+            richTextBox1.Enabled = true;
+            textBox1.Enabled = true;
+        }
+
+        private void Sklad_Load(object sender, EventArgs e)
+        {
+            using (SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-O3QKGQU\SQLEXPRESS;Initial Catalog=Farm;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand("Select distinct Категория from Склад_Для_Запчастей", connection);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        comboBox1.Items.Add(reader[0].ToString());
+                    }
+                }
+            }
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            SqlDataAdapter sqlDataAdapter = new SqlDataAdapter("Select Серийный_номер,Название_запчасти,Дата_прибытия,Количество,Категория from Склад_Для_Запчастей where Название_запчасти like '%" + textBox2.Text + "%'", connection);
+            DataTable dataTable = new DataTable();
+            sqlDataAdapter.Fill(dataTable);
+            dataGridView1.DataSource = dataTable;
+          
         }
     }
 }
